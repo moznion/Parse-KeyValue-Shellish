@@ -31,7 +31,7 @@ subtest 'string that contains "=" should be parsed rightly' => sub {
 };
 
 subtest 'string that contains whitespace should be parsed rightly' => sub {
-    my $str = qq{foo='bar buz' qux="hoge  fuga" piyo="piyo=piyo\tpiyo};
+    my $str = qq{foo='bar buz' qux="hoge  fuga" piyo="piyo=piyo\tpiyo"};
     is_deeply parse_key_value($str), {
         foo  => 'bar buz',
         qux  => 'hoge  fuga',
@@ -59,13 +59,13 @@ subtest 'string that contains parenthesis should be parsed rightly' => sub {
     };
 };
 
-# subtest 'fail on parsing when invalid string is given' => sub {
-#     subtest 'given faked-escaping string' => sub {
-#         my $str = q{foo='\''};
-#         eval { parse_key_value($str) };
-#         ok $@;
-#     };
-#
+subtest 'fail on parsing when invalid string is given' => sub {
+    subtest 'given faked-escaping string' => sub {
+        my $str = q{foo='\''};
+        eval { parse_key_value($str) };
+        like $@, qr/Unbalanced quotation: foo='\\''/;
+    };
+
 #     subtest 'given naked back-slash' => sub {
 #         my $str = 'foo=\\';
 #         eval { parse_key_value($str) };
@@ -99,7 +99,7 @@ subtest 'string that contains parenthesis should be parsed rightly' => sub {
 #             ok $@;
 #         };
 #     };
-# };
+};
 
 done_testing;
 

@@ -1,6 +1,7 @@
 package Parse::KeyValue::Shellish::Parser;
 use strict;
 use warnings;
+use Carp;
 
 sub new {
     my ($class, $str) = @_;
@@ -73,13 +74,17 @@ sub parse {
 sub _parse_in_quote {
     my ($self, $quote) = @_;
 
-    my $value = '';
-    my $strlen = $self->{strlen};
+    my $balanced = 0;
+    my $value    = '';
+    my $strlen   = $self->{strlen};
 
     for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr $self->{str}, $self->{index}, 1;
 
-        last if $ch eq $quote && !$self->{escaped};
+        if ($ch eq $quote && !$self->{escaped}) {
+            $balanced = 1;
+            last;
+        }
 
         if ($ch eq '\\') {
             if ($quote eq "'") {
@@ -94,6 +99,8 @@ sub _parse_in_quote {
         $self->{escaped} = 0;
     }
 
+    croak "Unbalanced quotation: $self->{str}" unless $balanced;
+
     return $value;
 }
 
@@ -103,6 +110,7 @@ sub _parse_in_paren {
     my @array;
     my $value  = '';
     my $strlen = $self->{strlen};
+
     for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
