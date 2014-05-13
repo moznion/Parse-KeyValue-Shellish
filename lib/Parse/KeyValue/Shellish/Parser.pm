@@ -7,6 +7,7 @@ sub new {
 
     bless {
         index  => 0,
+        key    => '',
         str    => $str,
         strlen => length $str,
     }, $class;
@@ -16,7 +17,6 @@ sub parse {
     my ($self) = @_;
 
     my %parsed;
-    my $key     = '';
     my $token   = '';
     my $escaped = '';
 
@@ -25,21 +25,21 @@ sub parse {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
         if ($ch eq '=') {
-            if ($key) {
+            if ($self->{key}) {
                 $token .= $ch;
                 next;
             }
-            $key = $token;
+            $self->{key} = $token;
             $token = '';
             next;
         }
 
         if ($ch =~ /\s/) {
             $token .= '\\' if $escaped;
-            if ($key) {
-                $parsed{$key} = $token;
+            if ($self->{key}) {
+                $parsed{$self->{key}} = $token;
             }
-            $key   = '';
+            $self->{key} = '';
             $token = '';
             next;
         }
@@ -73,14 +73,14 @@ sub parse {
                 $token .= $ch;
             }
 
-            if ($key && $token) {
+            if ($self->{key} && $token) {
                 $token .= '\\' if $escaped;
                 push @array, $token;
                 $token = '';
             }
 
-            $parsed{$key} = \@array;
-            $key = '';
+            $parsed{$self->{key}} = \@array;
+            $self->{key} = '';
             next;
         }
 
@@ -93,9 +93,9 @@ sub parse {
         $escaped = 0;
     }
 
-    if ($key && $token) {
+    if ($self->{key} && $token) {
         $token .= '\\' if $escaped;
-        $parsed{$key} = $token;
+        $parsed{$self->{key}} = $token;
     }
 
     return \%parsed;
@@ -127,6 +127,9 @@ sub _parse_in_quote {
     }
 
     return $token;
+}
+
+sub _parse_in_paren {
 }
 
 1;
