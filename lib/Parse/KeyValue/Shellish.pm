@@ -2,10 +2,18 @@ package Parse::KeyValue::Shellish;
 use 5.008005;
 use strict;
 use warnings;
+use parent qw/Exporter/;
+use Parse::KeyValue::Shellish::Parser;
 
-our $VERSION = "0.01";
+our @EXPORT_OK = qw/parse_key_value/;
+our $VERSION   = "0.01";
 
+sub parse_key_value {
+    my ($str) = @_;
 
+    my $parser = Parse::KeyValue::Shellish::Parser->new($str);
+    $parser->parse;
+}
 
 1;
 __END__
