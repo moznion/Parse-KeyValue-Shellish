@@ -66,12 +66,6 @@ subtest 'fail on parsing when invalid string is given' => sub {
         like $@, qr/Unbalanced quotation: foo='\\''/;
     };
 
-    # subtest 'given naked back-slash' => sub {
-    #     my $str = 'foo=\ ';
-    #     eval { parse_key_value($str) };
-    #     ok $@;
-    # };
-    #
     subtest 'given unbalanced quote' => sub {
         subtest 'single-quote' => sub {
             my $str = "foo='";
