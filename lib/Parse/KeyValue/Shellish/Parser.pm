@@ -6,130 +6,130 @@ sub new {
     my ($class, $str) = @_;
 
     bless {
-        index  => 0,
-        key    => '',
-        str    => $str,
-        strlen => length $str,
+        index   => 0,
+        escaped => 0,
+        key     => '',
+        str     => $str,
+        strlen  => length $str,
+        parsed  => {},
     }, $class;
 }
 
 sub parse {
     my ($self) = @_;
 
-    my %parsed;
-    my $token   = '';
-    my $escaped = '';
-
+    my $value  = '';
     my $strlen = $self->{strlen};
     for ($self->{index} = 0; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
         if ($ch eq '=') {
             if ($self->{key}) {
-                $token .= $ch;
+                $value .= $ch;
                 next;
             }
-            $self->{key} = $token;
-            $token = '';
+            $self->{key} = $value;
+            $value = '';
             next;
         }
 
         if ($ch =~ /\s/) {
-            $token .= '\\' if $escaped;
+            $value .= '\\' if $self->{escaped};
             if ($self->{key}) {
-                $parsed{$self->{key}} = $token;
+                $self->{parsed}->{$self->{key}} = $value;
             }
             $self->{key} = '';
-            $token = '';
+            $value = '';
             next;
         }
 
         if ($ch eq "'" || $ch eq '"') {
-            $token .= $self->_parse_in_quote($ch);
+            $value .= $self->_parse_in_quote($ch);
             next;
         }
 
-        if ($ch eq '(' && !$escaped) {
-            my @array;
-
-            for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
-                my $ch = substr($self->{str}, $self->{index}, 1);
-
-                if ($ch eq ')') {
-                    last;
-                }
-
-                if ($ch =~ /\s/) {
-                    push @array, $token;
-                    $token = '';
-                    next;
-                }
-
-                if ($ch eq "'" || $ch eq '"') {
-                    $token .= $self->_parse_in_quote($ch);
-                    next;
-                }
-
-                $token .= $ch;
-            }
-
-            if ($self->{key} && $token) {
-                $token .= '\\' if $escaped;
-                push @array, $token;
-                $token = '';
-            }
-
-            $parsed{$self->{key}} = \@array;
-            $self->{key} = '';
+        if ($ch eq '(' && !$self->{escaped}) {
+            $self->_parse_in_paren;
             next;
         }
 
         if ($ch eq '\\') {
-            $escaped = 1;
+            $self->{escaped} = 1;
             next;
         }
 
-        $token .= $ch;
-        $escaped = 0;
+        $value .= $ch;
+        $self->{escaped} = 0;
     }
 
-    if ($self->{key} && $token) {
-        $token .= '\\' if $escaped;
-        $parsed{$self->{key}} = $token;
+    if ($self->{key} && $value) {
+        $value .= '\\' if $self->{escaped};
+        $self->{parsed}->{$self->{key}} = $value;
     }
 
-    return \%parsed;
+    return $self->{parsed};
 }
 
 sub _parse_in_quote {
     my ($self, $quote) = @_;
 
-    my $escaped = 0;
-    my $token = '';
+    my $value = '';
     my $strlen = $self->{strlen};
 
     for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr $self->{str}, $self->{index}, 1;
 
-        last if $ch eq $quote && !$escaped;
+        last if $ch eq $quote && !$self->{escaped};
 
         if ($ch eq '\\') {
             if ($quote eq "'") {
-                $token .= $ch;
+                $value .= $ch;
                 next;
             }
-            $escaped = 1;
+            $self->{escaped} = 1;
             next;
         }
 
-        $token .= $ch;
-        $escaped = 0;
+        $value .= $ch;
+        $self->{escaped} = 0;
     }
 
-    return $token;
+    return $value;
 }
 
 sub _parse_in_paren {
+    my ($self) = @_;
+
+    my @array;
+    my $value  = '';
+    my $strlen = $self->{strlen};
+    for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
+        my $ch = substr($self->{str}, $self->{index}, 1);
+
+        last if $ch eq ')';
+
+        if ($ch =~ /\s/) {
+            push @array, $value;
+            $value = '';
+            next;
+        }
+
+        if ($ch eq "'" || $ch eq '"') {
+            $value .= $self->_parse_in_quote($ch);
+            next;
+        }
+
+        $value .= $ch;
+    }
+
+    if ($self->{key} && $value) {
+        $value .= '\\' if $self->{escaped};
+        push @array, $value;
+        $value = '';
+    }
+
+    $self->{parsed}->{$self->{key}} = \@array;
+    $self->{key} = '';
 }
 
 1;
