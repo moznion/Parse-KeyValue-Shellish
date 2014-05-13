@@ -55,7 +55,7 @@ sub parse {
         }
 
         if ($ch eq ')' && !$self->{escaped}) {
-            croak "Unbalanced parenthesis $self->{str}";
+            croak qq{[ERROR] Unbalanced parenthesis "$self->{str}"};
         }
 
         if ($ch eq '\\') {
@@ -103,7 +103,7 @@ sub _parse_in_quote {
         $self->{escaped} = 0;
     }
 
-    croak "Unbalanced quotation: $self->{str}" unless $balanced;
+    croak qq{[ERROR] Unbalanced quotation: "$self->{str}"} unless $balanced;
 
     return $value;
 }
@@ -144,7 +144,7 @@ sub _parse_in_paren {
         $value = '';
     }
 
-    croak "Unbalanced parenthesis $self->{str}" unless $balanced;
+    croak qq{[ERROR] Unbalanced parenthesis "$self->{str}"} unless $balanced;
 
     $self->{parsed}->{$self->{key}} = \@array;
     $self->{key} = '';

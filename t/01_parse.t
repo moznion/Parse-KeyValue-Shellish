@@ -63,20 +63,20 @@ subtest 'fail on parsing when invalid string is given' => sub {
     subtest 'given faked-escaping string' => sub {
         my $str = q{foo='\''};
         eval { parse_key_value($str) };
-        like $@, qr/Unbalanced quotation: foo='\\''/;
+        like $@, qr/\[ERROR] Unbalanced quotation: "foo='\\''"/;
     };
 
     subtest 'given unbalanced quote' => sub {
         subtest 'single-quote' => sub {
             my $str = "foo='";
             eval { parse_key_value($str) };
-            ok $@;
+            like $@, qr/\[ERROR] Unbalanced quotation: "foo='"/;
         };
 
         subtest 'double-quote' => sub {
             my $str = 'foo="';
             eval { parse_key_value($str) };
-            ok $@;
+            like $@, qr/\[ERROR] Unbalanced quotation: "foo=""/;
         };
     };
 
@@ -84,13 +84,13 @@ subtest 'fail on parsing when invalid string is given' => sub {
         subtest 'left parenthesis' => sub {
             my $str = '(';
             eval { parse_key_value($str) };
-            ok $@;
+            like $@, qr/\[ERROR] Unbalanced parenthesis "\("/,
         };
 
         subtest 'right parenthesis' => sub {
             my $str = ')';
             eval { parse_key_value($str) };
-            ok $@;
+            like $@, qr/\[ERROR] Unbalanced parenthesis "\)"/,
         };
     };
 };
