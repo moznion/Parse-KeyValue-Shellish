@@ -54,6 +54,10 @@ sub parse {
             next;
         }
 
+        if ($ch eq ')' && !$self->{escaped}) {
+            croak "Unbalanced parenthesis $self->{str}";
+        }
+
         if ($ch eq '\\') {
             $self->{escaped} = 1;
             next;
@@ -108,13 +112,17 @@ sub _parse_in_paren {
     my ($self) = @_;
 
     my @array;
-    my $value  = '';
-    my $strlen = $self->{strlen};
+    my $balanced = 0;
+    my $value    = '';
+    my $strlen   = $self->{strlen};
 
     for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
-        last if $ch eq ')';
+        if ($ch eq ')') {
+            $balanced = 1;
+            last;
+        }
 
         if ($ch =~ /\s/) {
             push @array, $value;
@@ -135,6 +143,8 @@ sub _parse_in_paren {
         push @array, $value;
         $value = '';
     }
+
+    croak "Unbalanced parenthesis $self->{str}" unless $balanced;
 
     $self->{parsed}->{$self->{key}} = \@array;
     $self->{key} = '';

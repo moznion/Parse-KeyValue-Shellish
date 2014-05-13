@@ -66,39 +66,39 @@ subtest 'fail on parsing when invalid string is given' => sub {
         like $@, qr/Unbalanced quotation: foo='\\''/;
     };
 
-#     subtest 'given naked back-slash' => sub {
-#         my $str = 'foo=\\';
-#         eval { parse_key_value($str) };
-#         ok $@;
-#     };
-#
-#     subtest 'given unbalanced quote' => sub {
-#         subtest 'single-quote' => sub {
-#             my $str = "foo='";
-#             eval { parse_key_value($str) };
-#             ok $@;
-#         };
-#
-#         subtest 'double-quote' => sub {
-#             my $str = 'foo="';
-#             eval { parse_key_value($str) };
-#             ok $@;
-#         };
-#     };
-#
-#     subtest 'given unbalanced parenthesis' => sub {
-#         subtest 'left parenthesis' => sub {
-#             my $str = '(';
-#             eval { parse_key_value($str) };
-#             ok $@;
-#         };
-#
-#         subtest 'right parenthesis' => sub {
-#             my $str = ')';
-#             eval { parse_key_value($str) };
-#             ok $@;
-#         };
-#     };
+    # subtest 'given naked back-slash' => sub {
+    #     my $str = 'foo=\ ';
+    #     eval { parse_key_value($str) };
+    #     ok $@;
+    # };
+    #
+    subtest 'given unbalanced quote' => sub {
+        subtest 'single-quote' => sub {
+            my $str = "foo='";
+            eval { parse_key_value($str) };
+            ok $@;
+        };
+
+        subtest 'double-quote' => sub {
+            my $str = 'foo="';
+            eval { parse_key_value($str) };
+            ok $@;
+        };
+    };
+
+    subtest 'given unbalanced parenthesis' => sub {
+        subtest 'left parenthesis' => sub {
+            my $str = '(';
+            eval { parse_key_value($str) };
+            ok $@;
+        };
+
+        subtest 'right parenthesis' => sub {
+            my $str = ')';
+            eval { parse_key_value($str) };
+            ok $@;
+        };
+    };
 };
 
 done_testing;
