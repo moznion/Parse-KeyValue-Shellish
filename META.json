@@ -53,6 +53,17 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/moznion/Parse-KeyValue-Shellish/issues"
+      },
+      "homepage" : "https://github.com/moznion/Parse-KeyValue-Shellish",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/moznion/Parse-KeyValue-Shellish.git",
+         "web" : "https://github.com/moznion/Parse-KeyValue-Shellish"
+      }
+   },
    "version" : "0.01",
    "x_authority" : "cpan:MOZNION"
 }
