@@ -25,7 +25,7 @@ sub parse {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
         if ($ch eq '=') {
-            if ($self->{key}) {
+            if ($self->{key}) { # for example `foo=bar=buz`
                 $value .= $ch;
                 next;
             }
@@ -35,7 +35,12 @@ sub parse {
         }
 
         if ($ch =~ /\s/) {
-            $value .= '\\' if $self->{escaped};
+            if ($self->{escaped}) {
+                $value .= $ch;
+                $self->{escaped} = 0;
+                next;
+            }
+
             if ($self->{key}) {
                 $self->{parsed}->{$self->{key}} = $value;
             }
@@ -59,6 +64,11 @@ sub parse {
         }
 
         if ($ch eq '\\') {
+            if ($self->{escaped}) {
+                $value .= $ch;
+                $self->{escaped} = 0;
+                next;
+            }
             $self->{escaped} = 1;
             next;
         }
