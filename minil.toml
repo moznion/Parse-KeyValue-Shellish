@@ -1,4 +1,4 @@
 name = "Parse-KeyValue-Shellish"
-# badges = ["travis"]
+badges = ["travis", "coveralls"]
 authority="cpan:MOZNION"
 
