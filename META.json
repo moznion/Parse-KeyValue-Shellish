@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Parses the key-value pairs like a shell script",
    "author" : [
       "moznion <moznion@gmail.com>"
    ],
