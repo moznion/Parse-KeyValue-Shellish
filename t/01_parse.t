@@ -44,7 +44,7 @@ subtest 'string that is needed escaping should be parsed rightly' => sub {
         my $str = q{foo="\"" bar='\' buz=\\\\ hoge=\(\) fuga=piyo\\\\};
         is_deeply parse_key_value($str), {
             foo  => '"',
-            bar  => '\\', # <= it's shell spec
+            bar  => '\\', # <= it's bash spec
             buz  => '\\',
             hoge => '()',
             fuga => 'piyo\\'
@@ -72,7 +72,7 @@ subtest 'string that contains parenthesis should be parsed rightly' => sub {
 };
 
 subtest 'fail on parsing when invalid string is given' => sub {
-    subtest 'given faked-escaping string (it is shell spec)' => sub {
+    subtest 'given faked-escaping string (it is bash spec)' => sub {
         my $str = q{foo='\''};
         eval { parse_key_value($str) };
         like $@, qr/\[ERROR] Unbalanced quotation: "foo='\\''"/;
