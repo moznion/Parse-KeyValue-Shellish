@@ -13,24 +13,27 @@ Parse::KeyValue::Shellish - Parses the key-value pairs like a shell script
 # DESCRIPTION
 
 Parse::KeyValue::Shellish parses the key-value pairs like a shell script, means key and value are separated by '=' (for example `foo=bar`).
-This is just \*\*\* shellish \*\*\*, means this module doesn't emulates the shell completely, It's spec.
-But I'm willing to support features if someone so wish it :)
+
+This is just \*\*\* shellish \*\*\*, means this module doesn't emulates the shell completely, It's spec.  But I'm willing to support features if someone so wish it :)
 
 # FUNCTIONS
 
 - parse\_key\_value($str)
 
-    Parses `$str` as shellish key-value and returns hash reference of parsed result.  If value is surrounded by parenthesis, it will be evaluated as array.
+    Parses `$str` as shellish key-value and returns hash reference of parsed result.
+
+    If value is surrounded by parenthesis, it will be evaluated as array.
 
     Blocks of key-value must be separated by whitespace.
 
     e.g.
-        parse\_key\_value('foo=bar buz=q\\ ux hoge=(fuga piyo)');
+
+        parse_key_value('foo=bar buz=q\ ux hoge=(fuga piyo)');
         # Result:
         #   {
         #       foo  => 'bar',
         #       buz  => 'q uz',
-        #       hoge => \['fuga', 'piyo'\]
+        #       hoge => ['fuga', 'piyo']
         #   }
 
     This function will croak if it has given a string which cannot be parsed.

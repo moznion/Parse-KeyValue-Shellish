@@ -34,8 +34,8 @@ Parse::KeyValue::Shellish - Parses the key-value pairs like a shell script
 =head1 DESCRIPTION
 
 Parse::KeyValue::Shellish parses the key-value pairs like a shell script, means key and value are separated by '=' (for example C<foo=bar>).
-This is just *** shellish ***, means this module doesn't emulates the shell completely, It's spec.
-But I'm willing to support features if someone so wish it :)
+
+This is just *** shellish ***, means this module doesn't emulates the shell completely, It's spec.  But I'm willing to support features if someone so wish it :)
 
 =head1 FUNCTIONS
 
@@ -43,11 +43,14 @@ But I'm willing to support features if someone so wish it :)
 
 =item * parse_key_value($str)
 
-Parses C<$str> as shellish key-value and returns hash reference of parsed result.  If value is surrounded by parenthesis, it will be evaluated as array.
+Parses C<$str> as shellish key-value and returns hash reference of parsed result.
+
+If value is surrounded by parenthesis, it will be evaluated as array.
 
 Blocks of key-value must be separated by whitespace.
 
 e.g.
+
     parse_key_value('foo=bar buz=q\ ux hoge=(fuga piyo)');
     # Result:
     #   {
