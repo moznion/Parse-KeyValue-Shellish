@@ -71,17 +71,19 @@ For example, this module can parse string like a C<foo=bar=buz>. Result of it wi
 
 =head2 You can quote the value
 
-Of course value can quote like a C<foo='bar buz'>. Result will be C<foo =E<gt> 'bar buz'>.
+Of course you can quote the value like a C<foo='bar buz'>. Result will be C<foo =E<gt> 'bar buz'>.
 
 =head2 You can escape the character which in value
 
-You can escape character by backslash, for example C<foo=ba\ r buz=\(\)>. Result of parsing it will be C<foo =E<gt> 'ba r', buz =E<gt> '()'>.
+You can escape the character by backslash, for example C<foo=ba\ r buz=\(\)>. Result of parsing it will be C<foo =E<gt> 'ba r', buz =E<gt> '()'>.
 
 =head3 You cannot escape the character if it is quoted by single quotes.
 
-You cannot escape character if it is quoted by single quotes. For example, C<foo='\'> will be parsed as C<for =E<gt> '\'>. So it will be fail to parse C<foo='\''> because single quotes are unbalanced. As the reason for this, C<\'> isn't escaped.
+You cannot escape the character if it is quoted by single quotes. For example, C<foo='\'> will be parsed as C<for =E<gt> '\'>.
 
-=head3 C<foo=\\> should be evaluated as C<\> on shell, but this module doesn't
+So it will be fail to parse C<foo='\''> because single quotes are unbalanced. As the reason for this, C<\'> isn't escaped.
+
+=head3 Shell recognizes C<foo=\\> as C<foo =E<gt> '\'>, but this module doesn't
 
 If you require an equivalent function, please give like so C<foo=\\\\>.
 

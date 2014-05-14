@@ -46,17 +46,19 @@ For example, this module can parse string like a `foo=bar=buz`. Result of it wil
 
 ## You can quote the value
 
-Of course value can quote like a `foo='bar buz'`. Result will be `foo => 'bar buz'`.
+Of course you can quote the value like a `foo='bar buz'`. Result will be `foo => 'bar buz'`.
 
 ## You can escape the character which in value
 
-You can escape character by backslash, for example `foo=ba\ r buz=\(\)`. Result of parsing it will be `foo => 'ba r', buz => '()'`.
+You can escape the character by backslash, for example `foo=ba\ r buz=\(\)`. Result of parsing it will be `foo => 'ba r', buz => '()'`.
 
 ### You cannot escape the character if it is quoted by single quotes.
 
-You cannot escape character if it is quoted by single quotes. For example, `foo='\'` will be parsed as `for => '\'`. So it will be fail to parse `foo='\''` because single quotes are unbalanced. As the reason for this, `\'` isn't escaped.
+You cannot escape the character if it is quoted by single quotes. For example, `foo='\'` will be parsed as `for => '\'`.
 
-### `foo=\\` should be evaluated as `\` on shell, but this module doesn't
+So it will be fail to parse `foo='\''` because single quotes are unbalanced. As the reason for this, `\'` isn't escaped.
+
+### Shell recognizes `foo=\\` as `foo => '\'`, but this module doesn't
 
 If you require an equivalent function, please give like so `foo=\\\\`.
 
