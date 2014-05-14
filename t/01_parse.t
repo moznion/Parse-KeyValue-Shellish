@@ -61,11 +61,13 @@ subtest 'string that is needed escaping should be parsed rightly' => sub {
 };
 
 subtest 'string that contains parenthesis should be parsed rightly' => sub {
-    my $str = qq{foo=(aaa "bbb"\t'cc c'\ndd d) buz=() qux='()'};
+    my $str = qq{foo=(aaa "bbb"\t'cc c'\ndd d) buz=() qux='()' hoge='(\()' fuga=('(')};
     is_deeply parse_key_value($str), {
-        foo => ['aaa', 'bbb', 'cc c', 'dd', 'd'],
-        buz => [],
-        qux => '()',
+        foo  => ['aaa', 'bbb', 'cc c', 'dd', 'd'],
+        buz  => [],
+        qux  => '()',
+        hoge => '(()',
+        fuga => ['('],
     };
 };
 
@@ -92,15 +94,27 @@ subtest 'fail on parsing when invalid string is given' => sub {
 
     subtest 'given unbalanced parenthesis' => sub {
         subtest 'left parenthesis' => sub {
-            my $str = '(';
+            my $str = 'foo=(';
             eval { parse_key_value($str) };
-            like $@, qr/\[ERROR] Unbalanced parenthesis "\("/,
+            like $@, qr/\[ERROR] Unbalanced parenthesis "foo=\("/,
         };
 
         subtest 'right parenthesis' => sub {
-            my $str = ')';
+            my $str = 'foo=)';
             eval { parse_key_value($str) };
-            like $@, qr/\[ERROR] Unbalanced parenthesis "\)"/,
+            like $@, qr/\[ERROR] Unbalanced parenthesis "foo=\)"/,
+        };
+
+        subtest 'left paren twice' => sub {
+            my $str = 'foo=(\()';
+            eval { parse_key_value($str) };
+            like $@, qr/\[ERROR] Unbalanced parenthesis "foo=\(\\\(\)"/,
+        };
+
+        subtest 'right paren twice' => sub {
+            my $str = 'foo=(bar))';
+            eval { parse_key_value($str) };
+            like $@, qr/\[ERROR] Unbalanced parenthesis "foo=\(bar\)\)"/,
         };
     };
 };

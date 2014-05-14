@@ -129,6 +129,10 @@ sub _parse_in_paren {
     for ($self->{index}++; $self->{index} < $strlen; $self->{index}++) {
         my $ch = substr($self->{str}, $self->{index}, 1);
 
+        if ($ch eq '(') {
+            croak qq{[ERROR] Unbalanced parenthesis "$self->{str}"};
+        }
+
         if ($ch eq ')') {
             $balanced = 1;
             last;
