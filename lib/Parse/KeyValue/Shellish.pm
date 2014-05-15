@@ -20,6 +20,8 @@ __END__
 
 =encoding utf-8
 
+=for stopwords shellish
+
 =head1 NAME
 
 Parse::KeyValue::Shellish - Parses the key-value pairs like a shell script
@@ -29,7 +31,7 @@ Parse::KeyValue::Shellish - Parses the key-value pairs like a shell script
     use Parse::KeyValue::Shellish qw/parse_key_value/;
 
     my $str    = 'foo=bar hoge=(fuga piyo)';
-    my $parsed = parse_key_value($str); # => {foo => 'bar', hoge => ['fuga', 'piyo']}
+    my $parsed = parse_key_value($str); # => is_deeply {foo => 'bar', hoge => ['fuga', 'piyo']}
 
 =head1 DESCRIPTION
 
@@ -44,10 +46,8 @@ This is just *** shellish ***, means this module doesn't emulates the shell comp
 =item * parse_key_value($str)
 
 Parses C<$str> as shellish key-value and returns hash reference of parsed result.
-
 If value is surrounded by parenthesis, it will be evaluated as array.
-
-Blocks of key-value must be separated by whitespace.
+Blocks of key-value must be separated by white-space.
 
 e.g.
 
